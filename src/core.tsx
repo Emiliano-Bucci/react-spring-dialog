@@ -1,7 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { animated, useSpring, UseSpringProps } from 'react-spring'
-
-type DispatchActions = 'show' | 'hide'
+import FocusTrap from 'focus-trap-react'
 
 type Props = {
   initial?: UseSpringProps
@@ -9,6 +8,9 @@ type Props = {
   leave?: UseSpringProps
   backdropBackground?: string
   renderBackdrop?: boolean
+  isActive: boolean
+  focusTrapProps?: Omit<FocusTrap.Props, 'children'>
+  onClose(): void
 }
 
 const DialogWrapper = animated.div
@@ -23,46 +25,43 @@ export function useSpringDialog({
   leave = {
     opacity: 0,
   },
+  isActive,
+  onClose,
   backdropBackground = 'rgba(0,0,0,0.72)',
   renderBackdrop = true,
-}: Props = {}) {
+  focusTrapProps = {},
+}: Props) {
   const [inTheDom, setInTheDom] = useState(false)
   const [dialogStyles, setDialogStyles] = useSpring(() => initial)
-  const [backdropStyles, setBackdropStyles] = useSpring(() => ({
-    opacity: 0,
-  }))
+  const backdropStyles = useSpring({
+    opacity: isActive ? 1 : 0,
+  })
 
-  function showDialog() {
-    setInTheDom(true)
-    setBackdropStyles.start({
-      opacity: 1,
-    })
-    setDialogStyles.start(enter)
-  }
-  function hideDialog() {
-    setBackdropStyles.start({
-      opacity: 0,
-    })
-    setDialogStyles.start({
-      ...leave,
-      onRest: (p, ctrl) => {
-        setInTheDom(false)
-
-        if (typeof leave.onRest === 'function') {
-          leave.onRest(p, ctrl)
-        }
-
-        setDialogStyles.start({ ...initial, immediate: true })
-      },
-    })
-  }
-  function dispatch(type: DispatchActions) {
-    if (type === 'show') {
-      showDialog()
-    } else {
-      hideDialog()
+  useEffect(() => {
+    if (isActive && !inTheDom) {
+      setInTheDom(true)
+      setDialogStyles.start(enter)
     }
-  }
+
+    if (!isActive && inTheDom) {
+      setDialogStyles.start({
+        ...leave,
+        onRest: (p, ctrl) => {
+          if (typeof leave.onRest === 'function') {
+            leave.onRest(p, ctrl)
+          }
+
+          setDialogStyles.start({
+            ...initial,
+            immediate: true,
+          })
+
+          setInTheDom(false)
+        },
+      })
+    }
+  }, [enter, inTheDom, initial, isActive, leave, setDialogStyles])
+
   function getDialogWrapperProps() {
     return {
       style: dialogStyles,
@@ -85,7 +84,7 @@ export function useSpringDialog({
       >
         {renderBackdrop && (
           <animated.div
-            onClick={() => dispatch('hide')}
+            onClick={onClose}
             style={{
               ...backdropStyles,
               position: 'absolute',
@@ -98,7 +97,7 @@ export function useSpringDialog({
             }}
           />
         )}
-        {children}
+        <FocusTrap {...focusTrapProps}>{children}</FocusTrap>
       </div>
     )
     return inTheDom ? dialog : null
@@ -108,6 +107,5 @@ export function useSpringDialog({
     Dialog,
     DialogWrapper,
     getDialogWrapperProps,
-    dispatch,
   }
 }

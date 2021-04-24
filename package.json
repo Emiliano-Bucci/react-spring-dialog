@@ -72,6 +72,7 @@
     ]
   },
   "dependencies": {
+    "focus-trap-react": "^8.5.0",
     "react-spring": "^9.1.2"
   }
 }
