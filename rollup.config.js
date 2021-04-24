@@ -3,6 +3,7 @@ import resolve from '@rollup/plugin-node-resolve'
 import external from 'rollup-plugin-peer-deps-external'
 import rollupTS from 'rollup-plugin-typescript2'
 import { terser } from 'rollup-plugin-terser'
+import commonjs from '@rollup/plugin-commonjs'
 
 const globals = {
   react: 'React',
@@ -14,34 +15,18 @@ export default {
   input: 'src/index.tsx',
   output: [
     {
-      format: 'cjs',
-      dir: 'dist/cjs',
-      sourcemap: true,
-      exports: 'named',
-    },
-    {
-      format: 'esm',
-      exports: 'named',
-      dir: 'dist/es',
-      sourcemap: true,
-    },
-    {
       format: 'umd',
       exports: 'named',
-      dir: 'dist/umd',
+      dir: 'dist/',
       sourcemap: true,
-      name: 'ReactSpringCarousel',
+      name: 'ReactSpringDialog',
       globals,
     },
   ],
   plugins: [
     rollupTS({
       tsconfigOverride: {
-        exclude: [
-          'node_modules',
-          'src/**/*.test.tsx',
-          'src/**/*.stories.tsx',
-        ],
+        exclude: ['Examples', 'node_modules'],
       },
     }),
     babel({
@@ -50,6 +35,7 @@ export default {
     }),
     external(),
     resolve(),
+    commonjs(),
     terser(),
   ],
 }
