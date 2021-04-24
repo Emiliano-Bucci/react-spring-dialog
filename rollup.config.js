@@ -3,6 +3,7 @@ import resolve from '@rollup/plugin-node-resolve'
 import external from 'rollup-plugin-peer-deps-external'
 import rollupTS from 'rollup-plugin-typescript2'
 import { terser } from 'rollup-plugin-terser'
+import size from 'rollup-plugin-filesize'
 
 const globals = {
   react: 'React',
@@ -35,5 +36,6 @@ export default {
     external(),
     resolve(),
     terser(),
+    size(),
   ],
 }
