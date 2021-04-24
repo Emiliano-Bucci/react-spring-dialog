@@ -4,8 +4,7 @@ export function Dialog() {
     Dialog,
     DialogWrapper,
     getDialogWrapperProps,
-    showDialog,
-    hideDialog,
+    dispatch,
   } = useSpringDialog({
     initial: {
       y: 0,
@@ -24,10 +23,10 @@ export function Dialog() {
       <Dialog>
         <DialogWrapper {...getDialogWrapperProps()}>
           <div>Dialog example</div>
-          <button onClick={hideDialog}>HIDE</button>
+          <button onClick={() => dispatch('hide')}>HIDE</button>
         </DialogWrapper>
       </Dialog>
-      <button onClick={showDialog}>SHOW</button>
+      <button onClick={() => dispatch('show')}>SHOW</button>
     </div>
   )
 }
