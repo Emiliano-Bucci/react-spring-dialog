@@ -70,5 +70,8 @@
       "prettier --write",
       "eslint --fix --config .eslintrc.precommit.js"
     ]
+  },
+  "dependencies": {
+    "react-spring": "^9.1.2"
   }
 }
