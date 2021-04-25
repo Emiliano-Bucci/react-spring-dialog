@@ -142,23 +142,29 @@ export const Dialog = ({
     : animated.div
 
   const dialog = (
-    <FocusTrap {...focusTrapProps}>
-      <DialogContainer>
-        {renderBackdrop && (
-          <animated.div
-            onClick={onClose}
-            style={{
-              ...backdropStyles,
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              zIndex: -1,
-              backgroundColor: backdropBackground,
-            }}
-          />
-        )}
+    <DialogContainer>
+      {renderBackdrop && (
+        <animated.div
+          onClick={onClose}
+          style={{
+            ...backdropStyles,
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: -1,
+            backgroundColor: backdropBackground,
+          }}
+        />
+      )}
+      <FocusTrap
+        {...focusTrapProps}
+        focusTrapOptions={{
+          ...focusTrapProps.focusTrapOptions,
+          allowOutsideClick: true,
+        }}
+      >
         <DialogWrapper
           role="dialog"
           aria-modal="true"
@@ -167,8 +173,8 @@ export const Dialog = ({
         >
           {children}
         </DialogWrapper>
-      </DialogContainer>
-    </FocusTrap>
+      </FocusTrap>
+    </DialogContainer>
   )
 
   return inTheDom && portalTarget.current
