@@ -1,6 +1,7 @@
-import { HTMLAttributes, useEffect, useState } from 'react'
+import { HTMLAttributes, useEffect, useRef, useState } from 'react'
 import { animated, useSpring, UseSpringProps } from 'react-spring'
 import FocusTrap from 'focus-trap-react'
+import ReactDOM from 'react-dom'
 
 const InternalDialogContainer: React.FC = ({ children }) => (
   <div
@@ -53,11 +54,33 @@ export const Dialog = ({
   WrapperComponent,
   ...rest
 }: Props) => {
+  const portalTarget = useRef<HTMLElement | null>(null)
   const [inTheDom, setInTheDom] = useState(false)
   const [dialogStyles, setDialogStyles] = useSpring(() => initial)
   const backdropStyles = useSpring({
     opacity: isActive ? 1 : 0,
   })
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const _portalTarget = document.getElementById(
+        '__REACT_SPRING_DIALOG__PORTAL__CONTAINER__',
+      )
+
+      if (_portalTarget) {
+        portalTarget.current = (portalTarget as unknown) as HTMLElement
+      } else {
+        const _target = document.createElement('div')
+        _target.setAttribute(
+          'id',
+          '__REACT_SPRING_DIALOG__PORTAL__CONTAINER__',
+        )
+
+        document.body.appendChild(_target)
+        portalTarget.current = _target
+      }
+    }
+  }, [])
 
   useEffect(() => {
     if (isActive && !inTheDom) {
@@ -121,5 +144,7 @@ export const Dialog = ({
     </DialogContainer>
   )
 
-  return inTheDom ? dialog : null
+  return inTheDom
+    ? ReactDOM.createPortal(dialog, portalTarget.current as Element)
+    : null
 }
