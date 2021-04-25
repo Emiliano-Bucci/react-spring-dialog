@@ -1,4 +1,4 @@
-import { DialogExample } from '.'
+import { DialogExample } from './'
 
 export const Primary = () => <DialogExample />
 

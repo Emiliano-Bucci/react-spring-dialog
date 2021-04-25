@@ -1,20 +1,12 @@
 import { useState } from 'react'
-import { Dialog } from '../../core'
-
-const Wrapper: React.FC = props => (
-  <div {...props}>{props.children}</div>
-)
+import { Dialog } from '../..'
 
 export function DialogExample() {
   const [isActive, setIsActive] = useState(false)
 
   return (
     <div>
-      <Dialog
-        isActive={isActive}
-        onClose={() => setIsActive(false)}
-        WrapperComponent={Wrapper}
-      >
+      <Dialog isActive={isActive} onClose={() => setIsActive(false)}>
         <div>Dialog example</div>
         <button onClick={() => setIsActive(false)}>HIDE</button>
       </Dialog>
