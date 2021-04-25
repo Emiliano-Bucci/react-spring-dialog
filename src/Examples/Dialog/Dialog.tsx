@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Dialog } from '../../src/core'
+import { Dialog } from '../../core'
 
 const Wrapper: React.FC = props => (
   <div {...props}>{props.children}</div>
