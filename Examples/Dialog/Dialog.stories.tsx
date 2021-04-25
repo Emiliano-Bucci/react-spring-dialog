@@ -1,6 +1,6 @@
-import { Dialog } from './'
+import { DialogExample } from './'
 
-export const Primary = () => <Dialog />
+export const Primary = () => <DialogExample />
 
 export default {
   title: 'Dialog',

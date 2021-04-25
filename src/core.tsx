@@ -1,6 +1,23 @@
-import { useEffect, useState } from 'react'
+import { HTMLAttributes, useEffect, useState } from 'react'
 import { animated, useSpring, UseSpringProps } from 'react-spring'
 import FocusTrap from 'focus-trap-react'
+
+const InternalDialogContainer: React.FC = ({ children }) => (
+  <div
+    style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+  >
+    {children}
+  </div>
+)
 
 type Props = {
   initial?: UseSpringProps
@@ -10,12 +27,14 @@ type Props = {
   renderBackdrop?: boolean
   isActive: boolean
   focusTrapProps?: Omit<FocusTrap.Props, 'children'>
+  children?: React.ReactNode
+  WrapperComponent?: React.FC
+  ContainerComponent?: React.FC
   onClose(): void
-}
+} & HTMLAttributes<HTMLElement>
 
-const DialogWrapper = animated.div
-
-export function useSpringDialog({
+export const Dialog = ({
+  children,
   initial = {
     opacity: 0,
   },
@@ -30,7 +49,10 @@ export function useSpringDialog({
   backdropBackground = 'rgba(0,0,0,0.72)',
   renderBackdrop = true,
   focusTrapProps = {},
-}: Props) {
+  ContainerComponent,
+  WrapperComponent,
+  ...rest
+}: Props) => {
   const [inTheDom, setInTheDom] = useState(false)
   const [dialogStyles, setDialogStyles] = useSpring(() => initial)
   const backdropStyles = useSpring({
@@ -62,50 +84,37 @@ export function useSpringDialog({
     }
   }, [enter, inTheDom, initial, isActive, leave, setDialogStyles])
 
-  function getDialogWrapperProps() {
-    return {
-      style: dialogStyles,
-    }
-  }
+  const DialogContainer = ContainerComponent
+    ? ContainerComponent
+    : InternalDialogContainer
+  const DialogWrapper = WrapperComponent
+    ? animated(WrapperComponent)
+    : animated.div
 
-  const Dialog: React.FC = ({ children }) => {
-    const dialog = (
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        {renderBackdrop && (
-          <animated.div
-            onClick={onClose}
-            style={{
-              ...backdropStyles,
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              zIndex: -1,
-              backgroundColor: backdropBackground,
-            }}
-          />
-        )}
-        <FocusTrap {...focusTrapProps}>{children}</FocusTrap>
-      </div>
-    )
-    return inTheDom ? dialog : null
-  }
+  const dialog = (
+    <DialogContainer>
+      {renderBackdrop && (
+        <animated.div
+          onClick={onClose}
+          style={{
+            ...backdropStyles,
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: -1,
+            backgroundColor: backdropBackground,
+          }}
+        />
+      )}
+      <FocusTrap {...focusTrapProps}>
+        <DialogWrapper style={dialogStyles} {...rest}>
+          {children}
+        </DialogWrapper>
+      </FocusTrap>
+    </DialogContainer>
+  )
 
-  return {
-    Dialog,
-    DialogWrapper,
-    getDialogWrapperProps,
-  }
+  return inTheDom ? dialog : null
 }

@@ -1,23 +1,22 @@
 import { useState } from 'react'
-import { useSpringDialog } from '../../src/core'
-export function Dialog() {
+import { Dialog } from '../../src/core'
+
+const Wrapper: React.FC = props => (
+  <div {...props}>{props.children}</div>
+)
+
+export function DialogExample() {
   const [isActive, setIsActive] = useState(false)
-  const {
-    Dialog,
-    DialogWrapper,
-    getDialogWrapperProps,
-  } = useSpringDialog({
-    isActive,
-    onClose: () => setIsActive(false),
-  })
 
   return (
     <div>
-      <Dialog>
-        <DialogWrapper {...getDialogWrapperProps()}>
-          <div>Dialog example</div>
-          <button onClick={() => setIsActive(false)}>HIDE</button>
-        </DialogWrapper>
+      <Dialog
+        isActive={isActive}
+        onClose={() => setIsActive(false)}
+        WrapperComponent={Wrapper}
+      >
+        <div>Dialog example</div>
+        <button onClick={() => setIsActive(false)}>HIDE</button>
       </Dialog>
       <button onClick={() => setIsActive(true)}>SHOW</button>
     </div>
