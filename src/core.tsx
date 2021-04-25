@@ -109,7 +109,12 @@ export const Dialog = ({
         />
       )}
       <FocusTrap {...focusTrapProps}>
-        <DialogWrapper style={dialogStyles} {...rest}>
+        <DialogWrapper
+          role="dialog"
+          aria-modal="true"
+          style={dialogStyles}
+          {...rest}
+        >
           {children}
         </DialogWrapper>
       </FocusTrap>
