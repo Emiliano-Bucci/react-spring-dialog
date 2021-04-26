@@ -78,9 +78,10 @@ export const Dialog = ({
   const portalTarget = useRef<HTMLElement | null>(null)
   const [inTheDom, setInTheDom] = useState(false)
   const [dialogStyles, setDialogStyles] = useSpring(() => initial)
-  const backdropStyles = useSpring({
-    opacity: isActive ? 1 : 0,
-  })
+  const [backdropStyles, setBackdropStyles] = useSpring(() => ({
+    opacity: 0,
+    config: initial.config,
+  }))
 
   const getIsCurrentActiveDialog = useCallback(() => {
     const activeDialogs = getActiveDialogs()
@@ -146,10 +147,25 @@ export const Dialog = ({
   useEffect(() => {
     if (isActive && !inTheDom) {
       setInTheDom(true)
+
+      if (renderBackdrop) {
+        setBackdropStyles.start({
+          opacity: 1,
+          config: enter.config,
+        })
+      }
+
       setDialogStyles.start(enter)
     }
 
     if (!isActive && inTheDom) {
+      if (renderBackdrop) {
+        setBackdropStyles.start({
+          opacity: 0,
+          config: leave.config,
+        })
+      }
+
       setDialogStyles.start({
         ...leave,
         onRest: (p, ctrl) => {
@@ -167,7 +183,16 @@ export const Dialog = ({
         },
       })
     }
-  }, [enter, inTheDom, initial, isActive, leave, setDialogStyles])
+  }, [
+    enter,
+    inTheDom,
+    initial,
+    isActive,
+    leave,
+    renderBackdrop,
+    setBackdropStyles,
+    setDialogStyles,
+  ])
 
   useEffect(() => {
     function handleOnEscKey(event: KeyboardEvent) {
