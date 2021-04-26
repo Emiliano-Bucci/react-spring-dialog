@@ -106,7 +106,7 @@ export const Dialog = ({
         dialogIndexId.current = 0
       }
 
-      if (!activeDialogs.includes(dialogIndexId.current)) {
+      if (!dialogIndexId.current) {
         const newIndexId = activeDialogs.length - 1 + 1
         dialogIndexId.current = newIndexId
         activeDialogs.push(newIndexId)
