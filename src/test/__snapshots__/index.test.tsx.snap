@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Basic Dialog Snapshot 1`] = `
-<body>
+<body
+  style="overflow: hidden;"
+>
   <div />
   <div
     id="__REACT__SPRING__DIALOG__PORTAL__CONTAINER__"
