@@ -1,7 +1,21 @@
-import { HTMLAttributes, useEffect, useRef, useState } from 'react'
+import {
+  HTMLAttributes,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { animated, useSpring, UseSpringProps } from 'react-spring'
 import FocusTrap from 'focus-trap-react'
 import ReactDOM from 'react-dom'
+
+declare global {
+  interface Window {
+    __ACTIVE__REACT__SPRING__DIALOGS: number[]
+  }
+}
+
+const isBrowser = typeof window !== 'undefined'
 
 const InternalDialogContainer: React.FC = ({ children, ...rest }) => (
   <div
@@ -56,7 +70,7 @@ export const Dialog = ({
   WrapperComponent,
   ...rest
 }: Props) => {
-  const dialogIndexId = useRef(0)
+  const dialogIndexId = useRef<null | number>(null)
   const portalTarget = useRef<HTMLElement | null>(null)
   const [inTheDom, setInTheDom] = useState(false)
   const [dialogStyles, setDialogStyles] = useSpring(() => initial)
@@ -64,32 +78,52 @@ export const Dialog = ({
     opacity: isActive ? 1 : 0,
   })
 
+  function getActiveDialogs() {
+    return window.__ACTIVE__REACT__SPRING__DIALOGS
+  }
+
+  const getIsCurrentActiveDialog = useCallback(() => {
+    const activeDialogs = getActiveDialogs()
+
+    return (
+      activeDialogs[activeDialogs.length - 1] ===
+      dialogIndexId.current
+    )
+  }, [])
+
   useEffect(() => {
-    if (
-      typeof window !== 'undefined' &&
-      !window.__ACTIVE__REACT__SPRING__DIALOGS
-    ) {
+    if (isBrowser && !getActiveDialogs()) {
       window.__ACTIVE__REACT__SPRING__DIALOGS = []
     }
   }, [])
 
   useEffect(() => {
-    if (isActive) {
-      const activeDialogs = window.__ACTIVE__REACT__SPRING__DIALOGS
+    const activeDialogs = getActiveDialogs()
 
+    if (isActive) {
       if (activeDialogs.length === 0) {
         activeDialogs.push(0)
         dialogIndexId.current = 0
-      } else {
+      }
+
+      if (!activeDialogs.includes(dialogIndexId.current)) {
         const newIndexId = activeDialogs.length - 1 + 1
         dialogIndexId.current = newIndexId
         activeDialogs.push(newIndexId)
       }
     }
-  }, [isActive])
+
+    if (!isActive && inTheDom) {
+      if (activeDialogs.length > 0 && getIsCurrentActiveDialog()) {
+        window.__ACTIVE__REACT__SPRING__DIALOGS = getActiveDialogs().filter(
+          v => v !== dialogIndexId.current,
+        )
+      }
+    }
+  }, [getIsCurrentActiveDialog, isActive, inTheDom])
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && !portalTarget.current) {
+    if (isBrowser && !portalTarget.current) {
       const _portalTarget = document.getElementById(
         '__REACT__SPRING__DIALOG__PORTAL__CONTAINER__',
       )
@@ -129,10 +163,31 @@ export const Dialog = ({
           })
 
           setInTheDom(false)
+          dialogIndexId.current = null
         },
       })
     }
   }, [enter, inTheDom, initial, isActive, leave, setDialogStyles])
+
+  useEffect(() => {
+    function handleOnEscKey(event: KeyboardEvent) {
+      if (
+        event.key === 'Escape' &&
+        isActive &&
+        getIsCurrentActiveDialog()
+      ) {
+        onClose()
+      }
+    }
+
+    if (isBrowser) {
+      document.addEventListener('keydown', handleOnEscKey)
+
+      return () => {
+        document.removeEventListener('keydown', handleOnEscKey)
+      }
+    }
+  }, [getIsCurrentActiveDialog, isActive, onClose])
 
   const DialogContainer = ContainerComponent
     ? ContainerComponent
