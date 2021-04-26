@@ -96,4 +96,29 @@ describe('Basic Dialog', () => {
 
     expect(onClose).toBeCalledTimes(1)
   })
+
+  test('Call correct onClose order when user press the Escape kew', () => {
+    const onClose1 = jest.fn()
+    const onClose2 = jest.fn()
+    render(
+      <Dialog isActive={true} onClose={onClose1}>
+        <div>Dialog example1</div>
+        <button>Close</button>
+        <Dialog isActive={true} onClose={onClose2}>
+          <div>Dialog example2</div>
+          <button>Close</button>
+        </Dialog>
+      </Dialog>,
+    )
+
+    fireEvent(
+      document,
+      new KeyboardEvent('keydown', {
+        key: 'Escape',
+      }),
+    )
+
+    expect(onClose1).toBeCalledTimes(0)
+    expect(onClose2).toBeCalledTimes(1)
+  })
 })
