@@ -234,7 +234,7 @@ export const Dialog = ({
       data-testid="react-spring-dialog-container"
       style={{
         ...containerStyles,
-        zIndex: 10,
+        zIndex: 999999,
       }}
     >
       {renderBackdrop && (
