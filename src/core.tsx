@@ -36,7 +36,11 @@ const InternalDialogContainer: React.FC = ({ children, ...rest }) => (
   </div>
 )
 
-type Props = {
+function getActiveDialogs() {
+  return window.__ACTIVE__REACT__SPRING__DIALOGS
+}
+
+export type Props = {
   initial?: UseSpringProps
   enter?: UseSpringProps
   leave?: UseSpringProps
@@ -77,10 +81,6 @@ export const Dialog = ({
   const backdropStyles = useSpring({
     opacity: isActive ? 1 : 0,
   })
-
-  function getActiveDialogs() {
-    return window.__ACTIVE__REACT__SPRING__DIALOGS
-  }
 
   const getIsCurrentActiveDialog = useCallback(() => {
     const activeDialogs = getActiveDialogs()
@@ -197,10 +197,11 @@ export const Dialog = ({
     : animated.div
 
   const dialog = (
-    <DialogContainer>
+    <DialogContainer data-testid="react-spring-dialog-container">
       {renderBackdrop && (
         <animated.div
           onClick={onClose}
+          data-testid="react-spring-dialog-backdrop"
           style={{
             ...backdropStyles,
             position: 'absolute',
@@ -221,10 +222,11 @@ export const Dialog = ({
         }}
       >
         <DialogWrapper
+          style={dialogStyles}
+          data-testid="react-spring-dialog-wrapper"
+          {...rest}
           role="dialog"
           aria-modal="true"
-          style={dialogStyles}
-          {...rest}
         >
           {children}
         </DialogWrapper>

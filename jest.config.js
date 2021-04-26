@@ -10,6 +10,7 @@ module.exports = {
   moduleFileExtensions: ['js', 'tsx'],
   modulePaths: ['<rootDir>'],
   testURL: 'http://localhost',
+  setupFilesAfterEnv: ['<rootDir>/setupTest.ts'],
   moduleNameMapper: {
     '\\.svg': '<rootDir>/testMocks.ts',
     '\\.(css|jpg|png)$': '<rootDir>/empty-module.js',
