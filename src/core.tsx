@@ -105,9 +105,7 @@ export const Dialog = ({
       if (activeDialogs.length === 0) {
         activeDialogs.push(0)
         dialogIndexId.current = 0
-      }
-
-      if (!dialogIndexId.current) {
+      } else if (dialogIndexId.current === null) {
         const newIndexId = activeDialogs.length - 1 + 1
         dialogIndexId.current = newIndexId
         activeDialogs.push(newIndexId)
@@ -213,6 +211,16 @@ export const Dialog = ({
       }
     }
   }, [getIsCurrentActiveDialog, isActive, onClose])
+
+  useEffect(() => {
+    if (isActive && getActiveDialogs().length === 1) {
+      document.body.style.overflow = 'hidden'
+    }
+
+    if (!isActive && getActiveDialogs().length === 0) {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isActive])
 
   const DialogContainer = ContainerComponent
     ? ContainerComponent
