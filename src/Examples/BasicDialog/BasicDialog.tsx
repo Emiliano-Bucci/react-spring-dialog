@@ -6,11 +6,7 @@ export function BasicDialog() {
 
   return (
     <div>
-      <Dialog
-        isActive={isActive}
-        onClose={() => setIsActive(false)}
-        data-testid="dialog"
-      >
+      <Dialog isActive={isActive} onClose={() => setIsActive(false)}>
         <div>Dialog example</div>
         <button onClick={() => setIsActive(false)}>HIDE</button>
       </Dialog>
