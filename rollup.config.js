@@ -6,15 +6,22 @@ import { terser } from 'rollup-plugin-terser'
 import size from 'rollup-plugin-filesize'
 import commonjs from '@rollup/plugin-commonjs'
 
+const globals = {
+  react: 'React',
+  'react-dom': 'ReactDOM',
+  'react/jsx-runtime': 'jsxRuntime',
+}
+
 export default {
   input: 'src/index.tsx',
   output: [
     {
-      format: 'es',
+      format: 'umd',
       exports: 'named',
       dir: 'dist/',
       sourcemap: true,
       name: 'ReactSpringDialog',
+      globals,
     },
   ],
   plugins: [
