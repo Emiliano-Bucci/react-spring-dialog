@@ -220,6 +220,10 @@ export const Dialog = ({
     if (!isActive && getActiveDialogs().length === 0) {
       document.body.style.overflow = 'unset'
     }
+
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
   }, [isActive])
 
   const DialogContainer = ContainerComponent
