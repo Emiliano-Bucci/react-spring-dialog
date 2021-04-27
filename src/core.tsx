@@ -49,8 +49,8 @@ export type Props = {
   isActive: boolean
   focusTrapProps?: Omit<FocusTrap.Props, 'children'>
   children?: React.ReactNode
-  DialogComponent?: React.FC
   ContainerComponent?: React.FC<HTMLAttributes<HTMLDivElement>>
+  DialogComponent?: React.FC
   onClose(): void
 } & HTMLAttributes<HTMLElement>
 
@@ -78,7 +78,7 @@ export const Dialog = ({
   const portalTarget = useRef<HTMLElement | null>(null)
   const [inTheDom, setInTheDom] = useState(false)
   const [dialogStyles, setDialogStyles] = useSpring(() => initial)
-  const [containerStyles, setcontainerStyles] = useSpring(() => ({
+  const [backdropStyles, setBackdropStyles] = useSpring(() => ({
     opacity: 0,
     config: initial.config,
   }))
@@ -147,7 +147,7 @@ export const Dialog = ({
       setInTheDom(true)
 
       if (renderBackdrop) {
-        setcontainerStyles.start({
+        setBackdropStyles.start({
           opacity: 1,
           config: enter.config,
         })
@@ -158,7 +158,7 @@ export const Dialog = ({
 
     if (!isActive && inTheDom) {
       if (renderBackdrop) {
-        setcontainerStyles.start({
+        setBackdropStyles.start({
           opacity: 0,
           config: leave.config,
         })
@@ -188,7 +188,7 @@ export const Dialog = ({
     isActive,
     leave,
     renderBackdrop,
-    setcontainerStyles,
+    setBackdropStyles,
     setDialogStyles,
   ])
 
@@ -230,18 +230,13 @@ export const Dialog = ({
     : animated.div
 
   const dialog = (
-    <DialogContainer
-      data-testid="react-spring-dialog-container"
-      style={{
-        ...containerStyles,
-        zIndex: 999999,
-      }}
-    >
+    <DialogContainer data-testid="react-spring-dialog-container">
       {renderBackdrop && (
-        <div
+        <animated.div
           onClick={onClose}
           data-testid="react-spring-dialog-backdrop"
           style={{
+            ...backdropStyles,
             position: 'absolute',
             top: 0,
             left: 0,
