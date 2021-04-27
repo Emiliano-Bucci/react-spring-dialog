@@ -20,7 +20,7 @@ export default {
   plugins: [
     rollupTS({
       tsconfigOverride: {
-        exclude: ['Examples', 'node_modules'],
+        exclude: ['src/Examples', 'src/test', 'node_modules'],
       },
     }),
     babel({
