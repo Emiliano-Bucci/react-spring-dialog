@@ -42,6 +42,8 @@ export type Props = {
   initial?: UseSpringProps
   enter?: UseSpringProps
   leave?: UseSpringProps
+  backdropSpringConfig?: UseSpringProps['config']
+  useDefaultBackdropSpringConfig?: boolean
   backdropBackground?: string
   renderBackdrop?: boolean
   isActive: boolean
@@ -63,6 +65,8 @@ export const Dialog = ({
   leave = {
     opacity: 0,
   },
+  backdropSpringConfig,
+  useDefaultBackdropSpringConfig = true,
   isActive,
   onClose,
   backdropBackground = 'rgba(0,0,0,0.72)',
@@ -78,7 +82,9 @@ export const Dialog = ({
   const [dialogStyles, setDialogStyles] = useSpring(() => initial)
   const [backdropStyles, setBackdropStyles] = useSpring(() => ({
     opacity: 0,
-    config: initial.config,
+    config: useDefaultBackdropSpringConfig
+      ? {}
+      : backdropSpringConfig ?? initial.config,
   }))
 
   const getIsCurrentActiveDialog = useCallback(() => {
@@ -280,9 +286,12 @@ export const Dialog = ({
         }}
       >
         <DialogWrapper
-          style={dialogStyles}
           data-testid="react-spring-dialog-wrapper"
           {...rest}
+          style={{
+            ...dialogStyles,
+            ...rest.style,
+          }}
           role="dialog"
           aria-modal="true"
           data-target={`__react__spring__dialog__-${dialogIndexId.current}`}
