@@ -94,6 +94,10 @@ export const Dialog = ({
     if (isBrowser && !getActiveDialogs()) {
       window.__ACTIVE__REACT__SPRING__DIALOGS = []
     }
+
+    return () => {
+      window.__ACTIVE__REACT__SPRING__DIALOGS = []
+    }
   }, [])
 
   useEffect(() => {
