@@ -1,11 +1,11 @@
-# React Spring Dailog
+# React Spring Dialog
 
-> A simple, accessible and performant dialog component powered by `react-spring`.
+> A simple, accessible and performant Dialog component powered by `react-spring`.
 
 ## Features
 
 - Excelent performances thanks to `react-spring`.
-- **Accessibility** ready thanks to the use of `react-focus-trap` among other things.
+- **Accessibility** ready thanks to the use of `focus-trap-react` among other things.
 - Easy to style and to configure: no more headaches or hacky things trying to make the Dialog looks like we want.
 
 ## Install
