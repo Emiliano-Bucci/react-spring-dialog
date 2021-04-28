@@ -218,11 +218,13 @@ export const Dialog = ({
     if (!isActive && getActiveDialogs().length === 0) {
       document.body.style.overflow = 'unset'
     }
+  }, [isActive])
 
+  useEffect(() => {
     return () => {
       document.body.style.overflow = 'unset'
     }
-  }, [isActive])
+  }, [])
 
   const DialogContainer = ContainerComponent
     ? animated(ContainerComponent)
