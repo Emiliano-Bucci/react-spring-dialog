@@ -17,7 +17,7 @@ declare global {
 
 const isBrowser = typeof window !== 'undefined'
 
-const InternalDialogContainer: React.FC = ({ children, ...rest }) => (
+const InternalDialogContainer: React.FC = props => (
   <div
     style={{
       position: 'fixed',
@@ -30,10 +30,8 @@ const InternalDialogContainer: React.FC = ({ children, ...rest }) => (
       alignItems: 'center',
       zIndex: 999999,
     }}
-    {...rest}
-  >
-    {children}
-  </div>
+    {...props}
+  />
 )
 
 function getActiveDialogs() {
@@ -50,7 +48,7 @@ export type Props = {
   focusTrapProps?: Omit<FocusTrap.Props, 'children'>
   children?: React.ReactNode
   ContainerComponent?: React.FC<HTMLAttributes<HTMLDivElement>>
-  DialogComponent?: React.FC
+  DialogComponent?: React.FC<HTMLAttributes<HTMLElement>>
   onClose(): void
 } & HTMLAttributes<HTMLElement>
 
