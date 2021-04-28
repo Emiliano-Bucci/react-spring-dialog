@@ -39,4 +39,4 @@ export function Component() {
 
 ## Official documentation
 
-[Visit here](https://react-spring-dialogemilianobucci.com)
+[Visit here](https://react-spring-dialog.emilianobucci.com)
