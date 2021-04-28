@@ -18,6 +18,7 @@ exports[`Basic Dialog Snapshot 1`] = `
       />
       <div
         aria-modal="true"
+        data-target="__react__spring__dialog__-0"
         data-testid="react-spring-dialog-wrapper"
         role="dialog"
         style="opacity: 1;"
