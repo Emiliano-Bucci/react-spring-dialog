@@ -42,7 +42,11 @@ export type Props = {
   initial?: UseSpringProps
   enter?: UseSpringProps
   leave?: UseSpringProps
-  backdropSpringConfig?: UseSpringProps['config']
+  backdropSpringConfig?: {
+    initial?: UseSpringProps['config']
+    enter?: UseSpringProps['config']
+    leave?: UseSpringProps['config']
+  }
   useDefaultBackdropSpringConfig?: boolean
   backdropBackground?: string
   renderBackdrop?: boolean
@@ -80,11 +84,47 @@ export const Dialog = ({
   const portalTarget = useRef<HTMLElement | null>(null)
   const [inTheDom, setInTheDom] = useState(false)
   const [dialogStyles, setDialogStyles] = useSpring(() => initial)
+
+  const getBackdropSpringSettings = useCallback(
+    (phase: 'initial' | 'enter' | 'leave') => {
+      if (useDefaultBackdropSpringConfig) {
+        return {}
+      }
+
+      if (!!backdropSpringConfig) {
+        if (phase === 'initial') {
+          return backdropSpringConfig.initial
+        }
+
+        if (phase === 'enter') {
+          return backdropSpringConfig.enter
+        }
+
+        return backdropSpringConfig.leave
+      }
+
+      if (phase === 'initial') {
+        return initial.config
+      }
+
+      if (phase === 'enter') {
+        return enter.config
+      }
+
+      return leave.config
+    },
+    [
+      backdropSpringConfig,
+      enter.config,
+      initial.config,
+      leave.config,
+      useDefaultBackdropSpringConfig,
+    ],
+  )
+
   const [backdropStyles, setBackdropStyles] = useSpring(() => ({
     opacity: 0,
-    config: useDefaultBackdropSpringConfig
-      ? {}
-      : backdropSpringConfig ?? initial.config,
+    config: getBackdropSpringSettings('initial'),
   }))
 
   const getIsCurrentActiveDialog = useCallback(() => {
@@ -158,7 +198,7 @@ export const Dialog = ({
       if (renderBackdrop) {
         setBackdropStyles.start({
           opacity: 1,
-          config: enter.config,
+          config: getBackdropSpringSettings('enter'),
         })
       }
 
@@ -169,7 +209,7 @@ export const Dialog = ({
       if (renderBackdrop) {
         setBackdropStyles.start({
           opacity: 0,
-          config: leave.config,
+          config: getBackdropSpringSettings('leave'),
         })
       }
 
@@ -192,6 +232,7 @@ export const Dialog = ({
     }
   }, [
     enter,
+    getBackdropSpringSettings,
     inTheDom,
     initial,
     isActive,

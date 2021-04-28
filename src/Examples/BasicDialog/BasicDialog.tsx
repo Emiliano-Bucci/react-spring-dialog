@@ -13,6 +13,11 @@ export function BasicDialog() {
           backgroundColor: '#fff',
         }}
         useDefaultBackdropSpringConfig={false}
+        backdropSpringConfig={{
+          initial: {
+            tension: 1,
+          },
+        }}
         initial={{
           scale: 0.9,
           opacity: 0,
@@ -23,10 +28,16 @@ export function BasicDialog() {
         enter={{
           scale: 1,
           opacity: 1,
+          config: {
+            tension: 9000,
+          },
         }}
         leave={{
           scale: 1.1,
           opacity: 0,
+          config: {
+            tension: 900,
+          },
         }}
       >
         <div>Dialog example</div>
