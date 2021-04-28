@@ -226,6 +226,29 @@ export const Dialog = ({
     }
   }, [])
 
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      const wrapper = document.querySelector(
+        `[data-target="__react__spring__dialog__-${dialogIndexId.current}"]`,
+      )
+
+      if (
+        !wrapper?.contains(e.target as Node) &&
+        getIsCurrentActiveDialog()
+      ) {
+        onClose()
+      }
+    }
+
+    if (isActive) {
+      document.addEventListener('click', handleClick)
+
+      return () => {
+        document.removeEventListener('click', handleClick)
+      }
+    }
+  }, [getIsCurrentActiveDialog, isActive, onClose])
+
   const DialogContainer = ContainerComponent
     ? animated(ContainerComponent)
     : InternalDialogContainer
@@ -237,7 +260,6 @@ export const Dialog = ({
     <DialogContainer data-testid="react-spring-dialog-container">
       {renderBackdrop && (
         <animated.div
-          onClick={onClose}
           data-testid="react-spring-dialog-backdrop"
           style={{
             ...backdropStyles,
@@ -264,6 +286,7 @@ export const Dialog = ({
           {...rest}
           role="dialog"
           aria-modal="true"
+          data-target={`__react__spring__dialog__-${dialogIndexId.current}`}
         >
           {children}
         </DialogWrapper>
