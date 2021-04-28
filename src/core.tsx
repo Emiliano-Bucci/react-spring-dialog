@@ -97,6 +97,7 @@ export const Dialog = ({
 
     return () => {
       window.__ACTIVE__REACT__SPRING__DIALOGS = []
+      document.body.style.overflow = 'unset'
     }
   }, [])
 
@@ -223,12 +224,6 @@ export const Dialog = ({
       document.body.style.overflow = 'unset'
     }
   }, [isActive])
-
-  useEffect(() => {
-    return () => {
-      document.body.style.overflow = 'unset'
-    }
-  }, [])
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
