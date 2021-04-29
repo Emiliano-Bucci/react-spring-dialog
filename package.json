@@ -1,6 +1,6 @@
 {
   "name": "react-spring-dialog",
-  "version": "1.0.17",
+  "version": "1.1.0",
   "description": "A simple, accessible and performant dialog component",
   "scripts": {
     "start": "start-storybook -p 6006",
