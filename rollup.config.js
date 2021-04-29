@@ -5,11 +5,14 @@ import rollupTS from 'rollup-plugin-typescript2'
 import { terser } from 'rollup-plugin-terser'
 import size from 'rollup-plugin-filesize'
 import commonjs from '@rollup/plugin-commonjs'
+import pkg from './package.json'
 
 const globals = {
   react: 'React',
   'react-dom': 'ReactDOM',
   'react/jsx-runtime': 'jsxRuntime',
+  'react-spring': 'reactSpring',
+  'focus-trap-react': 'FocusTrap',
 }
 
 export default {
@@ -23,6 +26,17 @@ export default {
       name: 'ReactSpringDialog',
       globals,
     },
+    {
+      file: pkg.module,
+      format: 'es',
+      sourcemap: true,
+      name: 'ReactSpringDialog',
+      globals,
+    },
+  ],
+  external: [
+    ...Object.keys(pkg.dependencies || {}),
+    ...Object.keys(pkg.peerDependencies || {}),
   ],
   plugins: [
     rollupTS({
