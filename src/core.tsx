@@ -144,6 +144,7 @@ export const Dialog = ({
     return () => {
       window.__ACTIVE__REACT__SPRING__DIALOGS = []
       document.body.style.overflow = 'unset'
+      console.log('clear effect1')
     }
   }, [])
 
@@ -269,6 +270,7 @@ export const Dialog = ({
 
     if (!isActive && getActiveDialogs().length === 0) {
       document.body.style.overflow = 'unset'
+      console.log('clear effect2')
     }
   }, [isActive])
 
