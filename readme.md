@@ -17,7 +17,7 @@ npm install --save react-spring-dialog
 or
 
 ```bash
-yarn add --save react-spring-dialog
+yarn add react-spring-dialog
 ```
 
 ## How to use it
