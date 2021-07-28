@@ -43,6 +43,7 @@ export type Props = {
   enter?: UseSpringProps
   leave?: UseSpringProps
   closeDialonOnOutsideClick?: boolean
+  closeDialogOnEscKeyPress?: boolean
   backdropSpringConfig?: {
     initial?: UseSpringProps['config']
     enter?: UseSpringProps['config']
@@ -80,6 +81,7 @@ export const Dialog = ({
   ContainerComponent,
   DialogComponent,
   closeDialonOnOutsideClick = true,
+  closeDialogOnEscKeyPress = true,
   ...rest
 }: Props) => {
   const dialogIndexId = useRef<null | number>(null)
@@ -251,7 +253,8 @@ export const Dialog = ({
       if (
         event.key === 'Escape' &&
         isActive &&
-        getIsCurrentActiveDialog()
+        getIsCurrentActiveDialog() &&
+        closeDialogOnEscKeyPress
       ) {
         onClose()
       }
@@ -264,7 +267,12 @@ export const Dialog = ({
         document.removeEventListener('keydown', handleOnEscKey)
       }
     }
-  }, [getIsCurrentActiveDialog, isActive, onClose])
+  }, [
+    getIsCurrentActiveDialog,
+    isActive,
+    onClose,
+    closeDialogOnEscKeyPress,
+  ])
 
   useEffect(() => {
     if (isActive && getActiveDialogs().length === 1) {
