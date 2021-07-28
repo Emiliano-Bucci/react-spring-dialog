@@ -42,6 +42,7 @@ export type Props = {
   initial?: UseSpringProps
   enter?: UseSpringProps
   leave?: UseSpringProps
+  closeDialonOnOutsideClick?: boolean
   backdropSpringConfig?: {
     initial?: UseSpringProps['config']
     enter?: UseSpringProps['config']
@@ -78,6 +79,7 @@ export const Dialog = ({
   focusTrapProps = {},
   ContainerComponent,
   DialogComponent,
+  closeDialonOnOutsideClick = true,
   ...rest
 }: Props) => {
   const dialogIndexId = useRef<null | number>(null)
@@ -282,7 +284,8 @@ export const Dialog = ({
 
       if (
         !wrapper?.contains(e.target as Node) &&
-        getIsCurrentActiveDialog()
+        getIsCurrentActiveDialog() &&
+        closeDialonOnOutsideClick
       ) {
         onClose()
       }
@@ -295,7 +298,12 @@ export const Dialog = ({
         document.removeEventListener('click', handleClick)
       }
     }
-  }, [getIsCurrentActiveDialog, isActive, onClose])
+  }, [
+    getIsCurrentActiveDialog,
+    isActive,
+    onClose,
+    closeDialonOnOutsideClick,
+  ])
 
   const DialogContainer = ContainerComponent
     ? animated(ContainerComponent)
