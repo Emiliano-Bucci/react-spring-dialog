@@ -39,7 +39,6 @@ describe('Basic Dialog', () => {
 
     expect(baseElement).toMatchSnapshot()
   })
-
   test('Render dialog container', () => {
     render(<TestDialog />)
 
@@ -49,12 +48,12 @@ describe('Basic Dialog', () => {
 
     expect(backdrop).toBeInTheDocument()
   })
-
   test('Render custom ContainerComponent', () => {
     render(
       <TestDialog
         ContainerComponent={props => (
           <div {...props} data-testid="custom-container-component">
+            {/* eslint-disable-next-line */}
             {props.children}
           </div>
         )}
@@ -67,7 +66,6 @@ describe('Basic Dialog', () => {
 
     expect(customContainerComponent).toBeInTheDocument()
   })
-
   test('Render dialog backgropd', () => {
     render(<TestDialog />)
 
@@ -77,7 +75,6 @@ describe('Basic Dialog', () => {
 
     expect(backdrop).toBeInTheDocument()
   })
-
   test("Don't render dialog backgropd", () => {
     render(<TestDialog renderBackdrop={false} />)
 
@@ -87,7 +84,6 @@ describe('Basic Dialog', () => {
 
     expect(backdrop).not.toBeInTheDocument()
   })
-
   test('Render dialog wrapper', () => {
     render(<TestDialog />)
 
@@ -95,12 +91,12 @@ describe('Basic Dialog', () => {
 
     expect(backdrop).toBeInTheDocument()
   })
-
   test('Render custom DialogComponent', () => {
     render(
       <TestDialog
         DialogComponent={props => (
           <div {...props} data-testid="custom-dialog-component">
+            {/* eslint-disable-next-line */}
             {props.children}
           </div>
         )}
@@ -113,13 +109,11 @@ describe('Basic Dialog', () => {
 
     expect(customDialogComponent).toBeInTheDocument()
   })
-
   test('Render dialog role', () => {
     render(<TestDialog />)
 
     expect(screen.getByRole('dialog')).toBeTruthy()
   })
-
   test('Call onClose when user click in the backdrop', () => {
     const onClose = jest.fn()
     render(<TestDialog onClose={onClose} />)
@@ -132,7 +126,6 @@ describe('Basic Dialog', () => {
 
     expect(onClose).toBeCalledTimes(1)
   })
-
   test('Call onClose when user press the Escape kew', () => {
     const onClose = jest.fn()
     render(<TestDialog onClose={onClose} />)
@@ -146,7 +139,6 @@ describe('Basic Dialog', () => {
 
     expect(onClose).toBeCalledTimes(1)
   })
-
   test('Call correct onClose order when user press the Escape kew', () => {
     const onClose1 = jest.fn()
     const onClose2 = jest.fn()
@@ -171,7 +163,6 @@ describe('Basic Dialog', () => {
     expect(onClose1).toBeCalledTimes(0)
     expect(onClose2).toBeCalledTimes(1)
   })
-
   test('window.__ACTIVE__REACT__SPRING__DIALOGS should contain 1 item and item should be 0', () => {
     render(<TestDialog />)
 
@@ -180,7 +171,6 @@ describe('Basic Dialog', () => {
     expect(activeDialogs).toHaveLength(1)
     expect(activeDialogs[0]).toEqual(0)
   })
-
   test('window.__ACTIVE__REACT__SPRING__DIALOGS should contain 2 items and items should be 0 & 1', () => {
     render(
       <Dialog isActive={true} onClose={jest.fn()}>
@@ -199,7 +189,6 @@ describe('Basic Dialog', () => {
     expect(activeDialogs[0]).toEqual(0)
     expect(activeDialogs[1]).toEqual(1)
   })
-
   test('window.__ACTIVE__REACT__SPRING__DIALOGS should contain 1 item and item should be 0', () => {
     render(
       <Dialog isActive={true} onClose={jest.fn()}>

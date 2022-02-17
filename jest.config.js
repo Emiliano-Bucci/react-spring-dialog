@@ -11,13 +11,9 @@ module.exports = {
   modulePaths: ['<rootDir>'],
   testURL: 'http://localhost',
   setupFilesAfterEnv: ['<rootDir>/setupTest.ts'],
-  moduleNameMapper: {
-    '\\.svg': '<rootDir>/testMocks.ts',
-    '\\.(css|jpg|png)$': '<rootDir>/empty-module.js',
-    '^.+\\.(ts|tsx)?$': 'ts-jest',
-  },
   moduleDirectories: ['node_modules', './src'],
   notify: true,
   notifyMode: 'always',
   collectCoverageFrom: ['**/*.{ts,tsx}', '!<rootDir>/node_modules/'],
+  testEnvironment: 'jsdom',
 }

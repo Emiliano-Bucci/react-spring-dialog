@@ -1,5 +1,6 @@
 import {
   HTMLAttributes,
+  ReactNode,
   useCallback,
   useEffect,
   useRef,
@@ -17,22 +18,33 @@ declare global {
 
 const isBrowser = typeof window !== 'undefined'
 
-const InternalDialogContainer: React.FC = props => (
-  <div
-    style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      zIndex: 999999,
-    }}
-    {...props}
-  />
-)
+function InternalDialogContainer({
+  children,
+  style,
+  ...rest
+}: {
+  children: ReactNode
+} & HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 999999,
+        ...style,
+      }}
+      {...rest}
+    >
+      {children}
+    </div>
+  )
+}
 
 function getActiveDialogs() {
   return window.__ACTIVE__REACT__SPRING__DIALOGS
@@ -169,9 +181,8 @@ export const Dialog = ({
 
     if (!isActive && inTheDom) {
       if (activeDialogs.length > 0 && getIsCurrentActiveDialog()) {
-        window.__ACTIVE__REACT__SPRING__DIALOGS = getActiveDialogs().filter(
-          v => v !== dialogIndexId.current,
-        )
+        window.__ACTIVE__REACT__SPRING__DIALOGS =
+          getActiveDialogs().filter(v => v !== dialogIndexId.current)
       }
     }
   }, [getIsCurrentActiveDialog, isActive, inTheDom])

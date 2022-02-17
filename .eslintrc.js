@@ -5,7 +5,6 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:prettier/recommended',
     'plugin:testing-library/react',
-    'plugin:testing-library/recommended',
   ],
   plugins: ['react-hooks', 'testing-library', '@typescript-eslint'],
   parserOptions: {
@@ -39,7 +38,6 @@ module.exports = {
     'react-hooks/exhaustive-deps': 2,
     'testing-library/await-async-query': 2,
     'testing-library/no-await-sync-query': 2,
-    'testing-library/no-debug': 1,
     // Allowed
     'react/jsx-uses-react': 0,
     'react/react-in-jsx-scope': 0,
