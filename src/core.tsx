@@ -3,6 +3,8 @@ import {
   ReactNode,
   useCallback,
   useEffect,
+  useId,
+  useLayoutEffect,
   useRef,
   useState,
 } from 'react'
@@ -12,7 +14,7 @@ import ReactDOM from 'react-dom'
 
 declare global {
   interface Window {
-    __ACTIVE__REACT__SPRING__DIALOGS: number[]
+    __ACTIVE__REACT__SPRING__DIALOGS: string[]
   }
 }
 
@@ -94,7 +96,8 @@ export const Dialog = ({
   closeDialogOnEscKeyPress = true,
   ...rest
 }: Props) => {
-  const dialogIndexId = useRef<null | number>(null)
+  const uniqueId = useId()
+  const dialogId = useRef(uniqueId)
   const portalTarget = useRef<HTMLElement | null>(null)
   const [inTheDom, setInTheDom] = useState(false)
   const [dialogStyles, setDialogStyles] = useSpring(() => initial)
@@ -145,13 +148,15 @@ export const Dialog = ({
     const activeDialogs = getActiveDialogs()
 
     return (
-      activeDialogs[activeDialogs.length - 1] ===
-      dialogIndexId.current
+      activeDialogs[activeDialogs.length - 1] === dialogId.current
     )
   }, [])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     window.__ACTIVE__REACT__SPRING__DIALOGS = []
+  }, [])
+
+  useEffect(() => {
     return () => {
       if (getActiveDialogs().length === 0) {
         window.__ACTIVE__REACT__SPRING__DIALOGS = []
@@ -163,21 +168,19 @@ export const Dialog = ({
   useEffect(() => {
     const activeDialogs = getActiveDialogs()
 
-    if (isActive) {
-      if (activeDialogs.length === 0) {
-        activeDialogs.push(0)
-        dialogIndexId.current = 0
-      } else if (dialogIndexId.current === null) {
-        const newIndexId = activeDialogs.length - 1 + 1
-        dialogIndexId.current = newIndexId
-        activeDialogs.push(newIndexId)
-      }
+    if (
+      isActive &&
+      !window.__ACTIVE__REACT__SPRING__DIALOGS.includes(
+        dialogId.current,
+      )
+    ) {
+      window.__ACTIVE__REACT__SPRING__DIALOGS.push(dialogId.current)
     }
 
     if (!isActive && inTheDom) {
       if (activeDialogs.length > 0 && getIsCurrentActiveDialog()) {
         window.__ACTIVE__REACT__SPRING__DIALOGS =
-          getActiveDialogs().filter(v => v !== dialogIndexId.current)
+          getActiveDialogs().filter(v => v !== dialogId.current)
       }
     }
   }, [getIsCurrentActiveDialog, isActive, inTheDom])
@@ -238,7 +241,6 @@ export const Dialog = ({
           })
 
           setInTheDom(false)
-          dialogIndexId.current = null
         },
       })
     }
@@ -253,7 +255,6 @@ export const Dialog = ({
     setBackdropStyles,
     setDialogStyles,
   ])
-
   useEffect(() => {
     function handleOnEscKey(event: KeyboardEvent) {
       if (
@@ -266,9 +267,11 @@ export const Dialog = ({
       }
     }
 
-    document.addEventListener('keydown', handleOnEscKey)
-    return () => {
-      document.removeEventListener('keydown', handleOnEscKey)
+    if (isActive) {
+      document.addEventListener('keydown', handleOnEscKey)
+      return () => {
+        document.removeEventListener('keydown', handleOnEscKey)
+      }
     }
   }, [
     getIsCurrentActiveDialog,
@@ -276,7 +279,6 @@ export const Dialog = ({
     onClose,
     closeDialogOnEscKeyPress,
   ])
-
   useEffect(() => {
     if (isActive && getActiveDialogs().length === 1) {
       document.body.style.overflow = 'hidden'
@@ -286,16 +288,20 @@ export const Dialog = ({
       document.body.style.overflow = 'unset'
     }
   }, [isActive])
-
   useEffect(() => {
     function handleClick(e: MouseEvent) {
+      const container = document.querySelector(
+        `[data-id="react__spring__dialog__container__${dialogId.current}"]`,
+      )
       const wrapper = document.querySelector(
-        `[data-target="__react__spring__dialog__-${dialogIndexId.current}"]`,
+        `[data-target="__react__spring__dialog__-${dialogId.current}"]`,
       )
 
       if (
         wrapper &&
         !wrapper.contains(e.target as Node) &&
+        container &&
+        container.contains(e.target as Node) &&
         getIsCurrentActiveDialog() &&
         closeDialonOnOutsideClick
       ) {
@@ -324,7 +330,10 @@ export const Dialog = ({
     : animated.div
 
   const dialog = (
-    <DialogContainer data-testid="react-spring-dialog-container">
+    <DialogContainer
+      data-testid="react-spring-dialog-container"
+      data-id={`react__spring__dialog__container__${dialogId.current}`}
+    >
       {renderBackdrop && (
         <animated.div
           data-testid="react-spring-dialog-backdrop"
@@ -356,7 +365,7 @@ export const Dialog = ({
           }}
           role="dialog"
           aria-modal="true"
-          data-target={`__react__spring__dialog__-${dialogIndexId.current}`}
+          data-target={`__react__spring__dialog__-${dialogId.current}`}
         >
           {children}
         </DialogWrapper>

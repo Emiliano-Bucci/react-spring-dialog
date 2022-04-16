@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { Dialog } from '../..'
 
 export function BasicDialog() {
-  const [isActive, setIsActive] = useState(false)
-  const [a, setA] = useState(true)
+  const [isActive, setIsActive] = useState(true)
+  const [isActive2, setIsActive2] = useState(true)
 
   function handleOnClose() {
     setIsActive(false)
@@ -35,17 +35,30 @@ export function BasicDialog() {
             tension: 900,
           },
         }}
+        style={{
+          padding: 40,
+          background: 'red',
+        }}
       >
         <div>Dialog example</div>
         <button onClick={() => setIsActive(false)}>HIDE</button>
-        {a && (
-          <div>
-            <input type="text" />
-          </div>
-        )}
-        <button onClick={() => setA(p => !p)}>TOGGLE A</button>
+        <button onClick={() => setIsActive2(true)}>
+          SHOW DIALOG 2
+        </button>
       </Dialog>
       <button onClick={() => setIsActive(true)}>SHOW</button>
+      <Dialog
+        isActive={isActive2}
+        onClose={() => setIsActive2(false)}
+        style={{
+          padding: 40,
+          background: 'red',
+        }}
+      >
+        <button onClick={() => setIsActive2(false)}>
+          CLOSEEE MEEEE
+        </button>
+      </Dialog>
     </div>
   )
 }

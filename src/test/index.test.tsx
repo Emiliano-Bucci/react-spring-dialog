@@ -2,6 +2,7 @@ import { Dialog, Props as DialogProps } from '../../src'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { useState } from 'react'
 import { Globals } from 'react-spring'
+import userEvent from '@testing-library/user-event'
 
 beforeAll(() => {
   Globals.assign({
@@ -139,71 +140,26 @@ describe('Basic Dialog', () => {
 
     expect(onClose).toBeCalledTimes(1)
   })
-  test('Call correct onClose order when user press the Escape kew', () => {
+  test('Call correct onClose order when user press the Escape kew', async () => {
     const onClose1 = jest.fn()
     const onClose2 = jest.fn()
     render(
-      <Dialog isActive={true} onClose={onClose1}>
-        <div>Dialog example1</div>
-        <button>Close</button>
+      <>
+        <Dialog isActive={true} onClose={onClose1}>
+          <div>Dialog example1</div>
+          <button>Close</button>
+        </Dialog>
         <Dialog isActive={true} onClose={onClose2}>
           <div>Dialog example2</div>
           <button>Close</button>
         </Dialog>
-      </Dialog>,
+      </>,
     )
 
-    fireEvent(
-      document,
-      new KeyboardEvent('keydown', {
-        key: 'Escape',
-      }),
-    )
+    const user = userEvent.setup()
+    await user.keyboard('[Escape]')
 
     expect(onClose1).toBeCalledTimes(0)
     expect(onClose2).toBeCalledTimes(1)
-  })
-  test('window.__ACTIVE__REACT__SPRING__DIALOGS should contain 1 item and item should be 0', () => {
-    render(<TestDialog />)
-
-    const activeDialogs = window.__ACTIVE__REACT__SPRING__DIALOGS
-
-    expect(activeDialogs).toHaveLength(1)
-    expect(activeDialogs[0]).toEqual(0)
-  })
-  test('window.__ACTIVE__REACT__SPRING__DIALOGS should contain 2 items and items should be 0 & 1', () => {
-    render(
-      <Dialog isActive={true} onClose={jest.fn()}>
-        <div>Dialog example1</div>
-        <button>Close</button>
-        <Dialog isActive={true} onClose={jest.fn()}>
-          <div>Dialog example2</div>
-          <button>Close</button>
-        </Dialog>
-      </Dialog>,
-    )
-
-    const activeDialogs = window.__ACTIVE__REACT__SPRING__DIALOGS
-
-    expect(activeDialogs).toHaveLength(2)
-    expect(activeDialogs[0]).toEqual(0)
-    expect(activeDialogs[1]).toEqual(1)
-  })
-  test('window.__ACTIVE__REACT__SPRING__DIALOGS should contain 1 item and item should be 0', () => {
-    render(
-      <Dialog isActive={true} onClose={jest.fn()}>
-        <div>Dialog example1</div>
-        <button>Close</button>
-        <Dialog isActive={false} onClose={jest.fn()}>
-          <div>Dialog example2</div>
-          <button>Close</button>
-        </Dialog>
-      </Dialog>,
-    )
-
-    const activeDialogs = window.__ACTIVE__REACT__SPRING__DIALOGS
-
-    expect(activeDialogs).toHaveLength(1)
-    expect(activeDialogs[0]).toEqual(0)
   })
 })
