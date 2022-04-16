@@ -345,6 +345,7 @@ export const Dialog = ({
             width: '100%',
             height: '100%',
             zIndex: -1,
+            willChange: 'opacity',
             backgroundColor: backdropBackground,
           }}
         />
@@ -359,13 +360,14 @@ export const Dialog = ({
         <DialogWrapper
           data-testid="react-spring-dialog-wrapper"
           {...rest}
-          style={{
-            ...dialogStyles,
-            ...rest.style,
-          }}
           role="dialog"
           aria-modal="true"
           data-target={`__react__spring__dialog__-${dialogId.current}`}
+          style={{
+            ...dialogStyles,
+            ...rest.style,
+            willChange: 'transform, opacity',
+          }}
         >
           {children}
         </DialogWrapper>
