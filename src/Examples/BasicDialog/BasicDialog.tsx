@@ -5,11 +5,15 @@ export function BasicDialog() {
   const [isActive, setIsActive] = useState(false)
   const [a, setA] = useState(true)
 
+  function handleOnClose() {
+    setIsActive(false)
+  }
+
   return (
     <div>
       <Dialog
         isActive={isActive}
-        onClose={() => setIsActive(false)}
+        onClose={handleOnClose}
         initial={{
           scale: 0.9,
           opacity: 0,

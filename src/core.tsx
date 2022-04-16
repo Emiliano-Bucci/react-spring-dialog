@@ -16,8 +16,6 @@ declare global {
   }
 }
 
-const isBrowser = typeof window !== 'undefined'
-
 function InternalDialogContainer({
   children,
   style,
@@ -153,10 +151,7 @@ export const Dialog = ({
   }, [])
 
   useEffect(() => {
-    if (isBrowser && !getActiveDialogs()) {
-      window.__ACTIVE__REACT__SPRING__DIALOGS = []
-    }
-
+    window.__ACTIVE__REACT__SPRING__DIALOGS = []
     return () => {
       if (getActiveDialogs().length === 0) {
         window.__ACTIVE__REACT__SPRING__DIALOGS = []
@@ -188,7 +183,7 @@ export const Dialog = ({
   }, [getIsCurrentActiveDialog, isActive, inTheDom])
 
   useEffect(() => {
-    if (isBrowser && !portalTarget.current) {
+    if (!portalTarget.current) {
       const _portalTarget = document.getElementById(
         '__REACT__SPRING__DIALOG__PORTAL__CONTAINER__',
       )
@@ -271,12 +266,9 @@ export const Dialog = ({
       }
     }
 
-    if (isBrowser) {
-      document.addEventListener('keydown', handleOnEscKey)
-
-      return () => {
-        document.removeEventListener('keydown', handleOnEscKey)
-      }
+    document.addEventListener('keydown', handleOnEscKey)
+    return () => {
+      document.removeEventListener('keydown', handleOnEscKey)
     }
   }, [
     getIsCurrentActiveDialog,
@@ -302,7 +294,8 @@ export const Dialog = ({
       )
 
       if (
-        !wrapper?.contains(e.target as Node) &&
+        wrapper &&
+        !wrapper.contains(e.target as Node) &&
         getIsCurrentActiveDialog() &&
         closeDialonOnOutsideClick
       ) {
@@ -312,7 +305,6 @@ export const Dialog = ({
 
     if (isActive) {
       document.addEventListener('click', handleClick)
-
       return () => {
         document.removeEventListener('click', handleClick)
       }
